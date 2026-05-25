@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="FinanceAdvisor.API/FinanceAdvisor.API.csproj" />
+  <Project Path="FinanceAdvisor.Application/FinanceAdvisor.Application.csproj" />
+  <Project Path="FinanceAdvisor.Domain/FinanceAdvisor.Domain.csproj" />
+  <Project Path="FinanceAdvisor.Infrastructure/FinanceAdvisor.Infrastructure.csproj" />
+</Solution>
