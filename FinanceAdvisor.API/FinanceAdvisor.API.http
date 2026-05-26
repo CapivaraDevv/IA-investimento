@@ -1,6 +1,58 @@
-@FinanceAdvisor.API_HostAddress = http://localhost:5077
+@host = http://localhost:8080
 
-GET {{FinanceAdvisor.API_HostAddress}}/weatherforecast/
-Accept: application/json
+# ─── Substitua pelo ID retornado no POST /users ───
+@userId = 00000000-0000-0000-0000-000000000000
 
-###
+
+### 1. Criar usuário
+POST {{host}}/api/users
+Content-Type: application/json
+
+{
+  "name": "Pedro",
+  "salary": 2200
+}
+
+
+### 2. Definir perfil de investimento
+# RiskTolerance: Low=0, Medium=1, High=2
+# KnowledgeLevel: Beginner=0, Intermediate=1, Advanced=2
+PUT {{host}}/api/investment-profile
+Content-Type: application/json
+
+{
+  "userId": "{{userId}}",
+  "riskTolerance": 0,
+  "knowledgeLevel": 0,
+  "investmentHorizonMonths": 24
+}
+
+
+### 3. Criar meta financeira
+# GoalType: EmergencyFund=0, Purchase=1, Travel=2, Retirement=3, Education=4, Other=5
+POST {{host}}/api/goals
+Content-Type: application/json
+
+{
+  "userId": "{{userId}}",
+  "type": 0,
+  "description": "Reserva de emergência (6 meses)",
+  "targetAmount": 13200,
+  "deadlineMonths": 12
+}
+
+
+### 4. Gerar recomendação de investimento
+GET {{host}}/api/recommendations/{{userId}}
+
+
+### 5. Ver próximo passo sugerido
+GET {{host}}/api/recommendations/{{userId}}/next-step
+
+
+### 6. Listar metas do usuário
+GET {{host}}/api/goals/user/{{userId}}
+
+
+### 7. Buscar usuário por ID
+GET {{host}}/api/users/{{userId}}
