@@ -14,7 +14,7 @@ function App() {
   }, []);
 
   return (
-    <div>
+    <div className="bg-black">
       {recommendation === null ? (
         <p>Carregando...</p>
       ) : (
