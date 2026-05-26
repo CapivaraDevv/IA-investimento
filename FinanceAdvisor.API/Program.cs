@@ -18,6 +18,7 @@ builder.Services.AddScoped<IFinancialGoalRepository, FinancialGoalRepository>();
 builder.Services.AddScoped<IMonthlySnapshotRepository, MonthlySnapshotRepository>();
 builder.Services.AddScoped<IInvestmentProfileRepository, InvestmentProfileRepository>();
 builder.Services.AddScoped<IInvestmentRecommendationRepository, InvestmentRecommendationRepository>();
+builder.Services.AddScoped<IFixedExpenseRepository, FixedExpenseRepository>();
 
 // Services
 builder.Services.AddScoped<UserProfileService>();
@@ -25,6 +26,7 @@ builder.Services.AddScoped<FinancialGoalService>();
 builder.Services.AddScoped<InvestmentProfileService>();
 builder.Services.AddScoped<RecommendationService>();
 builder.Services.AddScoped<SimulationService>();
+builder.Services.AddScoped<ExpenseService>();
 
 builder.Services.AddCors(options =>
     options.AddDefaultPolicy(policy =>
