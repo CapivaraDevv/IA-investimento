@@ -5,6 +5,9 @@ type Props = {
 };
 
 export function RecommendationCard({ data }: Props) {
+  const formatBRL = (value: number) =>
+    value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+
   const emergencyProgress =
     (data.emergencyFundCurrent / data.emergencyFundTarget) * 100;
 
@@ -12,22 +15,25 @@ export function RecommendationCard({ data }: Props) {
     <div className="min-h-screen bg-slate-50 p-8">
       <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg p-6 space-y-6">
         {/* Header */}
-        <h1 className="text-2xl font-bold text-slate-800">
-          Assistente Financeiro
-        </h1>
+        <div>
+          <h1 className="text-2xl font-bold text-slate-800">
+            Assistente Financeiro
+          </h1>
+          <p className="text-sm text-slate-500 mt-1">{data.priority}</p>
+        </div>
 
         {/* grid de metricas */}
         <div className="grid grid-cols-3 gap-4">
           <div className="bg-blue-50 rounded-xl p-4">
             <p className="text-sm text-blue-500 font-bold">Renda Total</p>
             <p className="text-xl font-bold text-slate-800">
-              R$ {data.totalIncome}
+              {formatBRL(data.totalIncome)}
             </p>
           </div>
           <div className="bg-red-50 rounded-xl p-4">
             <p className="text-sm text-red-500 font-bold">Despesas fixas</p>
             <p className="text-xl font-bold text-slate-800">
-              R$ {data.totalFixedExpenses}
+              {formatBRL(data.totalFixedExpenses)}
             </p>
           </div>
           <div className="bg-green-50 rounded-xl p-4">
@@ -35,10 +41,12 @@ export function RecommendationCard({ data }: Props) {
               Valor para investir
             </p>
             <p className="text-xl font-bold text-slate-800">
-              R$ {data.amountToInvest}
+              {formatBRL(data.amountToInvest)}
             </p>
           </div>
         </div>
+
+        <div className="border-t border-slate-300" />
 
         {/* Reserva de emergência */}
         <div className="space-y-2">
@@ -47,16 +55,19 @@ export function RecommendationCard({ data }: Props) {
               Reserva de emergência
             </p>
             <p className="text-sm text-slate-500">
-              R$ {data.emergencyFundCurrent} / R$ {data.emergencyFundTarget}
+              {formatBRL(data.emergencyFundCurrent)} /{" "}
+              {formatBRL(data.emergencyFundTarget)}
             </p>
           </div>
-          <div className="w-full bg-slate-200 rounded-full h-3">
+          <div className="w-full bg-slate-200 rounded-full h-5">
             <div
-              className="bg-green-500 h-3 rounded-full"
+              className="bg-green-500 h-4 rounded-full"
               style={{ width: `${emergencyProgress}%` }}
             />
           </div>
         </div>
+
+        <div className="border-t border-slate-300" />
 
         {/* Alocações */}
         <div className="space-y-2">
@@ -74,12 +85,14 @@ export function RecommendationCard({ data }: Props) {
                   {allocation.percentage}%
                 </span>
                 <span className="text-sm text-slate-500">
-                  R$ {allocation.amount}
+                  {formatBRL(allocation.amount)}
                 </span>
               </div>
             </div>
           ))}
         </div>
+
+        <div className="border-t border-slate-300" />
 
         {/* Insights */}
         <div className="space-y-2">
@@ -93,6 +106,8 @@ export function RecommendationCard({ data }: Props) {
             </p>
           ))}
         </div>
+
+        <div className="border-t border-slate-300" />
       </div>
     </div>
   );
