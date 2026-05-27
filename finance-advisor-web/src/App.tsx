@@ -13,7 +13,7 @@ function App() {
       <Route path="/:userId" element={<AppShell />}>
         <Route path="dashboard" element={<Dashboard />} /> {/* ← filha */}
         <Route path="goals" element={<GoalsPage />} />
-        <Route path="simulation" element={<SimulationPage />} />
+        <Route path="simulate" element={<SimulationPage />} />
       </Route>
     </Routes>
   );

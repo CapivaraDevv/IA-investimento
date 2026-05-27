@@ -1,10 +1,9 @@
-import { label } from "framer-motion/client";
 import { Outlet, NavLink, useParams } from "react-router-dom";
 
 const NAV_ITEMS = [
-  { to: "dashboard", label: "Visão geral", icon: "▣" },
+  { to: "dashboard", label: "Visão geral" },
   { to: "goals", label: "Metas" },
-  { to: "simulate", label: "Simulação"}
+  { to: "simulate", label: "Simulação" },
 ];
 
 export default function AppShell() {
@@ -13,21 +12,37 @@ export default function AppShell() {
   return (
     <div className="flex min-h-screen bg-[#07101F]">
       {/* Sidebar */}
-      <aside className="w-60 flex flex-col /* TODO: padding e bordas */ ">
+      <aside className="w-60 p-8">
         {/* Logo */}
-        <div className="/* TODO */">
-          Finance Advisor
-        </div>
+        <div className="text-white font-bold text-xl mb-4">Finance Advisor</div>
 
         {/* Nav */}
-        <nav className="flex-1 /* TODO */">
+        <nav className="w-full flex flex-col text-white space-y-2">
           {NAV_ITEMS.map((item) => (
             <NavLink
               key={item.to}
               to={`/${userId}/${item.to}`}
-              className={``}
+              className={`
+                  relative
+                  w-full
+                  font-semibold
+                  transition-transform
+                  hover:translate-x-3
+          
+                  `}
             >
-              {item.label}
+              {({ isActive }) => (
+                <>
+                  {isActive && (
+                    <span className="absolute left-0 w-1 h-full bg-blue-600 rounded-full" />
+                  )}
+                  <span
+                    className={`pl-4 ${isActive ? "text-white" : "text-gray-400"}`}
+                  >
+                    {item.label}
+                  </span>
+                </>
+              )}
             </NavLink>
           ))}
         </nav>

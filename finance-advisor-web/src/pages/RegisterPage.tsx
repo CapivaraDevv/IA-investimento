@@ -345,7 +345,7 @@ export default function RegisterPage() {
         )
       );
 
-      navigate(`/dashboard/${userId}`);
+      navigate(`/${userId}/dashboard`);
     } catch {
       setError("Ocorreu um erro ao salvar seus dados. Verifique e tente novamente.");
       setLoading(false);
