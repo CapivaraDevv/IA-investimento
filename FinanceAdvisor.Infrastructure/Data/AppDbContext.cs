@@ -13,6 +13,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<InvestmentProfile> InvestmentProfiles => Set<InvestmentProfile>();
     public DbSet<InvestmentRecommendation> InvestmentRecommendations => Set<InvestmentRecommendation>();
     public DbSet<AssetAllocation> AssetAllocations => Set<AssetAllocation>();
+    public DbSet<Transaction> Transactions => Set<Transaction>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -89,5 +90,19 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.Property(x => x.Reason).HasMaxLength(300);
             e.HasOne(x => x.Recommendation).WithMany(x => x.Allocations).HasForeignKey(x => x.RecommendationId);
         });
+
+        modelBuilder.Entity<Transaction>(e =>
+        {
+            e.HasKey(x => x.Id);
+
+            e.Property(x => x.Description).HasMaxLength(200).IsRequired();
+
+            e.Property(x => x.Amount).HasPrecision(18,2);
+
+            e.Property(x => x.Category).HasMaxLength(100).IsRequired();
+
+            e.Property(x => x.Type).HasConversion<>
+        }
+        )
     }
 }
