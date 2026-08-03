@@ -7,18 +7,24 @@ public class Transaction
     public Guid Id { get; private set; }
     public string Description { get; private set; } = string.Empty;
 
+    public Guid UserProfileId { get; private set; }
+    public UserProfile UserProfile { get; private set; } = null!;
+
     public decimal Amount { get; private set; }
     public TransactionType Type { get; private set; }
-    public string Category { get; private set; } = string.Empty;
+
+    public TransactionCategory Category { get; private set; }
+    
     public DateTime Date { get; private set; }
 
     private Transaction() { }
 
     public Transaction(
+        Guid userProfileId,
         string description,
         decimal amount,
         TransactionType type,
-        string category,
+        TransactionCategory category,
         DateTime date)
     {
         if (string.IsNullOrWhiteSpace(description))
@@ -27,6 +33,7 @@ public class Transaction
             throw new ArgumentException("Amount must be greater than zero");
             
         Id = Guid.NewGuid();
+        UserProfileId = userProfileId;
         Description = description;
         Amount = amount;
         Type = type;

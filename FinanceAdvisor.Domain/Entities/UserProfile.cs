@@ -14,4 +14,6 @@ public class UserProfile
     public ICollection<FinancialGoal> Goals { get; set; } = [];
     public ICollection<MonthlySnapshot> Snapshots { get; set; } = [];
     public ICollection<InvestmentRecommendation> Recommendations { get; set; } = [];
+
+    public ICollection<Transaction> Transactions { get; private set; } = [];
 }

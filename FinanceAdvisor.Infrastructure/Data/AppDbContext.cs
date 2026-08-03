@@ -99,10 +99,12 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
             e.Property(x => x.Amount).HasPrecision(18,2);
 
-            e.Property(x => x.Category).HasMaxLength(100).IsRequired();
+            e.Property(x => x.Category).HasConversion<int>();
 
-            e.Property(x => x.Type).HasConversion<>
+            e.Property(x => x.Type).HasConversion<int>();
+
+            e.HasOne(x => x.UserProfile).WithMany(x => x.Transactions).HasForeignKey(x => x.UserProfileId);
         }
-        )
+        );
     }
 }
