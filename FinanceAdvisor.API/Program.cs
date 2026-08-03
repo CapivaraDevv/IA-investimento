@@ -20,6 +20,7 @@ builder.Services.AddScoped<IMonthlySnapshotRepository, MonthlySnapshotRepository
 builder.Services.AddScoped<IInvestmentProfileRepository, InvestmentProfileRepository>();
 builder.Services.AddScoped<IInvestmentRecommendationRepository, InvestmentRecommendationRepository>();
 builder.Services.AddScoped<IFixedExpenseRepository, FixedExpenseRepository>();
+builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 
 // Services
 builder.Services.AddScoped<UserProfileService>();
