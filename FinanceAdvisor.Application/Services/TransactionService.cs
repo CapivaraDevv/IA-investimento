@@ -24,27 +24,21 @@ public class TransactionService(ITransactionRepository repo)
         return MapToResponse(transaction);
     }
 
-    public async Task<IEnumerable<GoalResponse>> GetByUserAsync(Guid userId, CancellationToken ct = default)
+    public async Task<IEnumerable<TransactionResponse>> GetByUserAsync(Guid userId, CancellationToken ct = default)
     {
-        var goals = await repo.GetByUserIdAsync(userId, ct);
-        return goals.Select(MapToResponse);
+        var transactions = await repo.GetByUserIdAsync(userId, ct);
+        return transactions.Select(MapToResponse);
     }
 
-    public async Task<GoalResponse?> UpdateProgressAsync(Guid goalId, UpdateGoalProgressRequest request, CancellationToken ct = default)
+    public async Task<TransactionResponse?> GetByIdAsync(Guid transactionId, CancellationToken ct = default)
     {
-        var goal = await repo.GetByIdAsync(goalId, ct);
-        if (goal is null) return null;
+        var transaction = await repo.GetByIdAsync(transactionId, ct);
+        return transaction is null ? null : MapToResponse(transaction);
+    }
 
-        goal.CurrentAmount += request.Amount;
-
-        if (goal.CurrentAmount >= goal.TargetAmount)
-        {
-            goal.CurrentAmount = goal.TargetAmount;
-            goal.Status = GoalStatus.Completed;
-        }
-
-        await repo.UpdateAsync(goal, ct);
-        return MapToResponse(goal);
+    public async Task DeleteAsync(Guid transactionId, CancellationToken ct = default)
+    {
+        await repo.DeleteAsync(transactionId, ct);
     }
 
     private static TransactionResponse MapToResponse(Transaction t) =>

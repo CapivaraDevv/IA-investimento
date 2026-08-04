@@ -12,8 +12,8 @@ public record CreateTransactionRequest(
 public record TransactionResponse
 (
     Guid Id,
-    decimal Amount,
     string Description,
+    decimal Amount,
     TransactionType Type,
     TransactionCategory Category,
     DateTime CreatedAt
