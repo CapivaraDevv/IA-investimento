@@ -21,6 +21,8 @@ builder.Services.AddScoped<IInvestmentProfileRepository, InvestmentProfileReposi
 builder.Services.AddScoped<IInvestmentRecommendationRepository, InvestmentRecommendationRepository>();
 builder.Services.AddScoped<IFixedExpenseRepository, FixedExpenseRepository>();
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
+builder.Services.AddScoped<TransactionService>();
+
 
 // Services
 builder.Services.AddScoped<UserProfileService>();

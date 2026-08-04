@@ -9,11 +9,19 @@ public record CreateTransactionRequest(
     TransactionCategory Category
 );
 
+public record UpdateTransactionRequest(
+    string Description,
+    decimal Amount,
+    TransactionType Type,
+    TransactionCategory Category,
+    DateTime Date
+);
+
 public record TransactionResponse
 (
     Guid Id,
-    decimal Amount,
     string Description,
+    decimal Amount,
     TransactionType Type,
     TransactionCategory Category,
     DateTime CreatedAt

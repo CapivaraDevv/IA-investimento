@@ -14,7 +14,7 @@ public class Transaction
     public TransactionType Type { get; private set; }
 
     public TransactionCategory Category { get; private set; }
-    
+
     public DateTime Date { get; private set; }
 
     private Transaction() { }
@@ -29,11 +29,25 @@ public class Transaction
     {
         if (string.IsNullOrWhiteSpace(description))
             throw new ArgumentException("Description is required");
-        if (amount<=0)
+        if (amount <= 0)
             throw new ArgumentException("Amount must be greater than zero");
-            
+
         Id = Guid.NewGuid();
         UserProfileId = userProfileId;
+        Description = description;
+        Amount = amount;
+        Type = type;
+        Category = category;
+        Date = date;
+    }
+
+    public void Update(
+    string description,
+    decimal amount,
+    TransactionType type,
+    TransactionCategory category,
+    DateTime date)
+    {
         Description = description;
         Amount = amount;
         Type = type;
