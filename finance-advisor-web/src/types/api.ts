@@ -33,3 +33,24 @@ export type AssetAllocation = {
     percentage: number;
     reason: string;
 }
+
+export type GoalResponse = {
+    id: string;
+    type: number;
+    description: string;
+    targetAmount: number;
+    currentAmount: number;
+    remainingAmount: number;
+    progressPercentage: number;
+    monthlyContributionNeeded: number;
+    deadlineMonths: number;
+    status: number;
+}
+
+export type CreateGoalRequest = {
+    userId: string;
+    type: number;
+    description: string;
+    targetAmount: number;
+    deadlineMonths: number;
+}
