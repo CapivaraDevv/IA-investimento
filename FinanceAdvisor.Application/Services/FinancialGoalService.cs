@@ -10,17 +10,13 @@ public class FinancialGoalService(IFinancialGoalRepository repo)
     public async Task<GoalResponse> CreateAsync(CreateGoalRequest request, CancellationToken ct = default)
     {
         var goal = new FinancialGoal
-        {
-            Id = Guid.NewGuid(),
-            UserProfileId = request.UserId,
-            Type = request.Type,
-            Description = request.Description,
-            TargetAmount = request.TargetAmount,
-            CurrentAmount = 0,
-            DeadlineMonths = request.DeadlineMonths,
-            Status = GoalStatus.Active,
-            CreatedAt = DateTime.UtcNow
-        };
+        (
+            request.UserId,
+            request.Type,
+            request.Description,
+            request.TargetAmount,
+            request.DeadlineMonths
+        );
 
         await repo.AddAsync(goal, ct);
         return MapToResponse(goal);
@@ -37,13 +33,9 @@ public class FinancialGoalService(IFinancialGoalRepository repo)
         var goal = await repo.GetByIdAsync(goalId, ct);
         if (goal is null) return null;
 
-        goal.CurrentAmount += request.Amount;
+        goal.AddProgress(request.Amount);
 
-        if (goal.CurrentAmount >= goal.TargetAmount)
-        {
-            goal.CurrentAmount = goal.TargetAmount;
-            goal.Status = GoalStatus.Completed;
-        }
+        
 
         await repo.UpdateAsync(goal, ct);
         return MapToResponse(goal);

@@ -2,9 +2,12 @@ using FinanceAdvisor.Application.Services;
 using FinanceAdvisor.Domain.Interfaces;
 using FinanceAdvisor.Infrastructure.Data;
 using FinanceAdvisor.Infrastructure.Repositories;
+using FinanceAdvisor.API.Middleware;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -37,6 +40,8 @@ builder.Services.AddCors(options =>
         policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
 
 var app = builder.Build();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+
 
 if (app.Environment.IsDevelopment())
 {

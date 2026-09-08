@@ -19,6 +19,11 @@ public class GoalsController(FinancialGoalService service) : ControllerBase
     public async Task<IActionResult> GetByUser(Guid userId, CancellationToken ct) =>
         Ok(await service.GetByUserAsync(userId, ct));
 
+    [ProducesResponseType(typeof(GoalResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+
     [HttpPatch("{goalId:guid}/progress")]
     public async Task<IActionResult> UpdateProgress(Guid goalId, UpdateGoalProgressRequest request, CancellationToken ct)
     {

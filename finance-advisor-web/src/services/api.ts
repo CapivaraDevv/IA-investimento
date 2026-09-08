@@ -21,8 +21,9 @@ export async function createGoal(request: CreateGoalRequest): Promise<GoalRespon
     return response.data;
 }
 
-export async function updateGoalProgress(goalId: string, ) {
-    
+export async function updateGoalProgress(goalId: string, amount: number): Promise<GoalResponse> {
+    const response = await api.patch<GoalResponse>(`/api/goals/${goalId}/progress`, { amount });
+    return response.data;
 }
 
 export default api

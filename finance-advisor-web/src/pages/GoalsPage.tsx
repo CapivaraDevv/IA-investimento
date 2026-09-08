@@ -1,12 +1,8 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
+import { GoalCard } from "../components/goals/GoalCard";
 import { createGoal } from "../services/api";
 import { useGoals } from "../hooks/useGoals";
-
-const currency = new Intl.NumberFormat("pt-BR", {
-  style: "currency",
-  currency: "BRL",
-});
 
 export default function GoalsPage() {
   const { userId } = useParams();
@@ -129,40 +125,11 @@ export default function GoalsPage() {
       ) : (
         <div className="grid gap-4 md:grid-cols-2">
           {goals.map((goal) => (
-            <article
+            <GoalCard
               key={goal.id}
-              className="rounded-xl bg-white p-6 shadow-sm"
-            >
-              <div className="mb-4 flex items-start justify-between gap-4">
-                <h2 className="text-lg font-bold text-slate-900">
-                  {goal.description}
-                </h2>
-                <span className="text-sm font-semibold text-indigo-600">
-                  {goal.progressPercentage.toFixed(0)}%
-                </span>
-              </div>
-
-              <div className="mb-4 h-2 overflow-hidden rounded-full bg-slate-100">
-                <div
-                  className="h-full rounded-full bg-indigo-600"
-                  style={{
-                    width: `${Math.min(goal.progressPercentage, 100)}%`,
-                  }}
-                />
-              </div>
-
-              <p className="text-sm text-slate-600">
-                {currency.format(goal.currentAmount)} de{" "}
-                {currency.format(goal.targetAmount)}
-              </p>
-              <p className="mt-2 text-sm text-slate-500">
-                Faltam {currency.format(goal.remainingAmount)}
-              </p>
-              <p className="mt-4 text-sm font-medium text-slate-700">
-                Aporte sugerido:{" "}
-                {currency.format(goal.monthlyContributionNeeded)}/mês
-              </p>
-            </article>
+              goal={goal}
+              onProgressSaved={reload}
+            />
           ))}
         </div>
       )}
