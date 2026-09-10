@@ -24,9 +24,9 @@ public class TransactionService(ITransactionRepository repo)
         return MapToResponse(transaction);
     }
 
-    public async Task<IEnumerable<TransactionResponse>> GetByUserAsync(Guid userId, CancellationToken ct = default)
+    public async Task<IEnumerable<TransactionResponse>> GetByUserAsync(Guid userId, TransactionType? type = null, CancellationToken ct = default)
     {
-        var transactions = await repo.GetByUserIdAsync(userId, ct);
+        var transactions = await repo.GetByUserIdAsync(userId, type, ct);
         return transactions.Select(MapToResponse);
     }
 

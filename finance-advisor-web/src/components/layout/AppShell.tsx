@@ -2,6 +2,7 @@ import { Outlet, NavLink, useParams } from "react-router-dom";
 
 const NAV_ITEMS = [
   { to: "dashboard", label: "Visão geral" },
+  { to: "transactions", label: "Transações" },
   { to: "goals", label: "Metas" },
   { to: "simulate", label: "Simulação" },
 ];

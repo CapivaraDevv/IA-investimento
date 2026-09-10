@@ -2,6 +2,7 @@ using FinanceAdvisor.Application.DTOs;
 using FinanceAdvisor.Application.Services;
 using FinanceAdvisor.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using FinanceAdvisor.Domain.Enums;
 
 namespace FinanceAdvisor.API.Controllers;
 
@@ -22,9 +23,10 @@ public class TransactionController(TransactionService service) : ControllerBase
     [HttpGet("user/{userProfileId:guid}")]
     public async Task<ActionResult<IEnumerable<TransactionResponse>>> GetByUser(
         Guid userProfileId,
+        [FromQuery] TransactionType? type,
         CancellationToken ct)
     {
-        var transactions = await service.GetByUserAsync(userProfileId, ct);
+        var transactions = await service.GetByUserAsync(userProfileId, type, ct);
         return Ok(transactions);
     }
 

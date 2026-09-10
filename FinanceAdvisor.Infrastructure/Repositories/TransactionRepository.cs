@@ -1,4 +1,5 @@
 using FinanceAdvisor.Domain.Entities;
+using FinanceAdvisor.Domain.Enums;
 using FinanceAdvisor.Domain.Interfaces;
 using FinanceAdvisor.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -10,8 +11,27 @@ public class TransactionRepository(AppDbContext db) : ITransactionRepository
     public Task<Transaction?> GetByIdAsync(Guid id, CancellationToken ct = default) =>
         db.Transactions.FirstOrDefaultAsync(x => x.Id == id, ct);
 
-    public async Task<IEnumerable<Transaction>> GetByUserIdAsync(Guid userId, CancellationToken ct = default) =>
-        await db.Transactions.Where(x => x.UserProfileId == userId).ToListAsync(ct);
+    public async Task<IEnumerable<Transaction>> GetByUserIdAsync(
+        Guid userId,
+        TransactionType? type = null,
+        CancellationToken ct = default)
+    {
+        var query = db.Transactions
+            .Where(transaction => transaction.UserProfileId == userId);
+        
+
+        if (type.HasValue)
+        {
+            query = query.Where(
+                transaction => transaction.Type == type.Value
+            );
+        } 
+
+        return await query
+            .OrderByDescending(transaction => transaction.Date)
+            .ToListAsync(ct);
+    }
+        
 
     public async Task AddAsync(Transaction transaction, CancellationToken ct = default)
     {
