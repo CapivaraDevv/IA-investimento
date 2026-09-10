@@ -13,6 +13,16 @@ public class RecommendationService(
     private const decimal InvestmentRate = 0.20m;
     private const decimal EmergencyFundMonths = 6m;
 
+    private static readonly HashSet<ExpenseCategory> EssentialExpenseCategories = new()
+    {
+        ExpenseCategory.Housing,
+        ExpenseCategory.Food,
+        ExpenseCategory.Transport,
+        ExpenseCategory.Health,
+        ExpenseCategory.Utilities,
+        ExpenseCategory.Insurance
+    };
+
     public async Task<RecommendationResponse> GenerateAsync(Guid userId, CancellationToken ct = default)
     {
         var profile = await profileRepo.GetByIdWithDetailsAsync(userId, ct)
@@ -20,11 +30,7 @@ public class RecommendationService(
 
         var investmentProfile = await investmentProfileRepo.GetByUserIdAsync(userId, ct);
 
-        var totalIncome = profile.Incomes
-            .Where(i => i.Month == DateTime.UtcNow.Month && i.Year == DateTime.UtcNow.Year)
-            .Sum(i => i.Amount);
-
-        if (totalIncome == 0) totalIncome = profile.Salary;
+        var totalIncome = CalculateCurrentMonthlyIncome(profile);
 
         var totalExpenses = profile.FixedExpenses.Where(e => e.IsActive).Sum(e => e.Amount);
         var surplus = totalIncome - totalExpenses;
@@ -33,9 +39,12 @@ public class RecommendationService(
         var emergencyGoal = profile.Goals
             .FirstOrDefault(g => g.Type == GoalType.EmergencyFund && g.Status == GoalStatus.Active);
 
-        var emergencyTarget = totalIncome * EmergencyFundMonths;
+        var emergencyTarget = CalculateEmergencyFundTarget(profile.FixedExpenses);
         var emergencyCurrent = emergencyGoal?.CurrentAmount ?? 0m;
-        var emergencyComplete = emergencyCurrent >= emergencyTarget;
+        var emergencyComplete =
+    emergencyGoal is not null &&
+    emergencyTarget > 0 &&
+    emergencyCurrent >= emergencyTarget;
 
         var risk = investmentProfile?.RiskTolerance ?? RiskTolerance.Low;
         var knowledge = investmentProfile?.KnowledgeLevel ?? InvestmentKnowledgeLevel.Beginner;
@@ -92,18 +101,27 @@ public class RecommendationService(
 
         var investmentProfile = await investmentProfileRepo.GetByUserIdAsync(userId, ct);
 
-        var totalIncome = profile.Salary;
+        var totalIncome = CalculateCurrentMonthlyIncome(profile);
+        var totalExpenses = profile.FixedExpenses.Where(expense => expense.IsActive).Sum(expense => expense.Amount);
+
+        var surplus = totalIncome - totalExpenses;
+
         var emergencyGoal = profile.Goals
             .FirstOrDefault(g => g.Type == GoalType.EmergencyFund && g.Status == GoalStatus.Active);
 
-        var emergencyTarget = totalIncome * EmergencyFundMonths;
+        var emergencyTarget = CalculateEmergencyFundTarget(profile.FixedExpenses);
         var emergencyCurrent = emergencyGoal?.CurrentAmount ?? 0m;
-        var emergencyComplete = emergencyCurrent >= emergencyTarget;
+        var emergencyComplete =
+    emergencyGoal is not null &&
+    emergencyTarget > 0 &&
+    emergencyCurrent >= emergencyTarget;
 
         if (!emergencyComplete)
         {
             var remaining = emergencyTarget - emergencyCurrent;
-            var monthlyInvest = totalIncome * InvestmentRate;
+            var monthlyInvest = surplus > 0
+    ? surplus * InvestmentRate
+    : 0m;
             var monthsToComplete = monthlyInvest > 0
                 ? (int)Math.Ceiling((double)(remaining / monthlyInvest))
                 : 36;
@@ -211,5 +229,29 @@ public class RecommendationService(
         return insights;
     }
 
+
+    private static decimal CalculateEmergencyFundTarget(
+        IEnumerable<FixedExpense> expenses
+    )
+    {
+        var monthlyEssentialExpenses = expenses.Where(expense =>
+            expense.IsActive &&
+            EssentialExpenseCategories.Contains(expense.Category)).Sum(expense => expense.Amount);
+
+        return monthlyEssentialExpenses * EmergencyFundMonths;
+    }
+
+    private static decimal CalculateCurrentMonthlyIncome(
+        UserProfile profile
+    )
+    {
+        var now = DateTime.UtcNow;
+
+        var monthlyIncome = profile.Incomes.Where(income => 
+                income.Month == now.Month &&
+                income.Year == now.Year). Sum(income => income.Amount);
+
+        return monthlyIncome > 0 ? monthlyIncome : profile.Salary;
+    }
     private static decimal Pct(decimal total, decimal pct) => Math.Round(total * pct, 2);
 }

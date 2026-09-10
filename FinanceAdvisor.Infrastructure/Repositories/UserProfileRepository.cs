@@ -16,6 +16,7 @@ public class UserProfileRepository(AppDbContext db) : IUserProfileRepository
             .Include(x => x.FixedExpenses)
             .Include(x => x.Goals)
             .Include(x => x.InvestmentProfile)
+            .Include(x => x.Transactions)
             .FirstOrDefaultAsync(x => x.Id == id, ct);
 
     public async Task<IEnumerable<UserProfile>> GetAllAsync(CancellationToken ct = default) =>
